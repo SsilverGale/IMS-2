@@ -8,6 +8,8 @@ TagManager:
   - Melon
   - Spring
   - Spikes
+  - Moving Platform
+  - Door
   layers:
   - Default
   - TransparentFX

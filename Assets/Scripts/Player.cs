@@ -27,15 +27,14 @@ public class Player : MonoBehaviour
     int DoubleJump;
 
     public Animator animator;
-
-
+    private SpriteRenderer sprite;
 
     //A boolean to check facing direction of player. Will be used for sprite
     private bool isFacingRight;
 
     //Variables for keeping track of melons
     public int melonCount;
-    int maxMelons;
+    [SerializeField] int maxMelons;
 
     [SerializeField] private Text UI;
 
@@ -45,10 +44,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-        melonCount = 0;
-        maxMelons = 1;
         transform.position = SpawnPoint;
-        //Instantiate(Watermelon, new Vector2(3.5f,0.5f), Quaternion.identity);
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called at a fixed rate
@@ -59,12 +56,14 @@ public class Player : MonoBehaviour
         {
             body.AddForce(accelerationPower * -transform.right, ForceMode2D.Force);
             animator.SetBool("IsMove", true);
+            sprite.flipX = true;
         }
         //Move Right
         else if (Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow))
         {
             body.AddForce(accelerationPower * transform.right, ForceMode2D.Force);
             animator.SetBool("IsMove", true);
+            sprite.flipX = false;
         }
         else
         {
@@ -130,7 +129,6 @@ public class Player : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Gain a melon for grabbing a melon
@@ -139,7 +137,13 @@ public class Player : MonoBehaviour
             melonCount++;
             Debug.Log("Current melons " + melonCount);
         }
+
+        if (collision.CompareTag("Door") && melonCount == maxMelons)
+        {
+            SceneManager.LoadScene("Level Complete");
+        }
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //Spring Collision Code
